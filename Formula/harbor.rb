@@ -30,23 +30,23 @@ class Harbor < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.44/harbor-darwin-arm64"
-      sha256 "59c01057b254327e5e37bf29ea433a0f68db76e078c71a0ffbe6a661b1094a31"
+      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.45/harbor-darwin-arm64"
+      sha256 "46368f6d8f74e4ddc8dbf5f871b50d03ed12884e28db78d858e61bd7755abb76"
     end
     on_intel do
-      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.44/harbor-darwin-amd64"
-      sha256 "ade324548b9387ff2c8ef7f52d5fbc1699cc84b5a5a738f60872898cbae1438f"
+      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.45/harbor-darwin-amd64"
+      sha256 "a1d7a8167e7a318cf83f7697023bdeaf4e5c08eba4d6379984a443d02628c19b"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.44/harbor-linux-arm64"
-      sha256 "cfb926188f0634369595612042a1d1443786a04f2fa23a3548d0e3fc7316cb38"
+      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.45/harbor-linux-arm64"
+      sha256 "4238953f69104875e6761b59c0a226a774e4f728a05ea9ffbc22c936e201fc71"
     end
     on_intel do
-      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.44/harbor-linux-amd64"
-      sha256 "5858a45a575c2ab50d285aa7112b8b2ed5b908136b2796ac197f65397c81e4bf"
+      url "https://github.com/HarborMyNotes/harbor-cli/releases/download/v0.1.45/harbor-linux-amd64"
+      sha256 "b90c464be39a454aaa14373553fc1800f5ad05c63ade28eec11e0d8a31258fc0"
     end
   end
 
