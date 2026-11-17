@@ -2,9 +2,9 @@
 # Copyright 2026 Cloudmanic Labs, LLC. All rights reserved.
 # Date: 2026-08-27
 #
-# Guards the formula on every push and pull request. Formula/harbor.rb is
-# rewritten by harbor-cli's release workflow rather than by a person, so this is
-# where a bad automatic bump gets caught before a user hits it.
+# Guards the formula and the cask on every push and pull request. Both are bumped
+# by release workflows rather than by a person, so this is where a bad automatic
+# bump gets caught before a user hits it.
 #
 
 name: tests
@@ -67,3 +67,46 @@ jobs:
           brew install --formula "${{ steps.set-up-homebrew.outputs.tap-name }}/harbor"
           brew test harbor
           harbor --version
+
+  # The Mac app only installs on macOS, so the cask gets its own macOS-only job.
+  test-cask:
+    name: harbor-notes cask
+    runs-on: macos-26
+    permissions:
+      contents: read
+    env:
+      CASK: harbormynotes/harbor/harbor-notes
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@a657b8b0cd35d0f65cce41fce9b24cf054b49869 # 2026.08.24.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Homebrew Bundler RubyGems
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: macos-26-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: macos-26-rubygems-
+
+      - name: Trust this tap
+        run: brew trust "${{ steps.set-up-homebrew.outputs.tap-name }}"
+
+      - name: Style
+        run: brew style --cask "$CASK"
+
+      # --online fetches the DMG and checks it against the cask's sha256.
+      - name: Audit
+        run: brew audit --cask --strict --online "$CASK"
+
+      # Proves the app is still signed and notarized, and that uninstall removes
+      # it. spctl's answer depends on the runner's Gatekeeper setting, so this
+      # checks the stapled notarization ticket directly.
+      - name: Install and uninstall the cask
+        run: |
+          brew install --cask "$CASK"
+          codesign --verify --deep --strict /Applications/Harbor.app
+          xcrun stapler validate /Applications/Harbor.app
+          brew uninstall --zap --cask "$CASK"
+          test ! -e /Applications/Harbor.app
