@@ -8,8 +8,8 @@
 # The token is harbor-notes because `harbor` is already the CLI formula in this
 # tap. Install with: brew install --cask harbormynotes/harbor/harbor-notes
 #
-# The url is the same versioned download link the Sparkle appcast uses. It
-# redirects to a short-lived link for the DMG, so the sha256 is the DMG's.
+# The url is the versioned download link the Sparkle appcast uses. The sha256 is
+# for the DMG that link serves.
 cask "harbor-notes" do
   version "1.0.92"
   sha256 "afa6a5878701e7d675e8d5f10414c30e23c4850af1547ec90eaad38e81e6743a"
@@ -19,7 +19,7 @@ cask "harbor-notes" do
   desc "Private, offline-first notes (Evernote alternative)"
   homepage "https://harbor.my/"
 
-  # short_version, or livecheck reports "1.0.92,<build number>" instead of 1.0.92.
+  # short_version, or livecheck reports "X.Y.Z,<build number>" instead of X.Y.Z.
   livecheck do
     url "https://harbor.my/appcast.xml"
     strategy :sparkle, &:short_version
@@ -32,10 +32,10 @@ cask "harbor-notes" do
 
   app "Harbor.app"
 
-  # The app is not sandboxed, so it writes straight into ~/Library. Its Share
-  # extension is sandboxed, so it gets its own container, and the two pass
-  # captured notes through the group container.
+  # The app is not sandboxed, so its data sits straight in ~/Library. Only the
+  # Share extension is sandboxed, so it alone gets a container.
   zap trash: [
+    "~/Library/Application Scripts/group.my.harbor.app",
     "~/Library/Application Scripts/my.harbor.app.share",
     "~/Library/Application Support/Harbor",
     "~/Library/Caches/Harbor",
@@ -49,8 +49,7 @@ cask "harbor-notes" do
     "~/Library/WebKit/my.harbor.app",
   ]
 
-  # The Mac App Store build is the same app with the same bundle id, so the two
-  # cannot sit side by side in /Applications.
+  # The Mac App Store build is also /Applications/Harbor.app, so only one fits.
   caveats <<~EOS
     If you installed Harbor from the Mac App Store, you already have it.
     Do not install both.

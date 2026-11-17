@@ -2,9 +2,9 @@
 # Copyright 2026 Cloudmanic Labs, LLC. All rights reserved.
 # Date: 2026-08-27
 #
-# Guards the formula and the cask on every push and pull request. Both are bumped
-# by release workflows rather than by a person, so this is where a bad automatic
-# bump gets caught before a user hits it.
+# Guards the formula and the cask on every push and pull request. Formula/harbor.rb
+# is rewritten by harbor-cli's release workflow rather than by a person, so this is
+# where a bad bump of either one gets caught before a user hits it.
 #
 
 name: tests
@@ -96,9 +96,15 @@ jobs:
       - name: Style
         run: brew style --cask "$CASK"
 
-      # --online fetches the DMG and checks it against the cask's sha256.
+      # --online fetches the DMG and checks it against the cask's sha256. The two
+      # livecheck checks are skipped: they fail whenever a new app release is out
+      # and the cask is not bumped yet, which would turn unrelated commits red.
       - name: Audit
-        run: brew audit --cask --strict --online "$CASK"
+        run: brew audit --cask --strict --online --except=livecheck_version,livecheck_https_availability "$CASK"
+
+      # Fails only if livecheck cannot read the appcast. Prints the newest version.
+      - name: Livecheck
+        run: brew livecheck --cask "$CASK"
 
       # Proves the app is still signed and notarized, and that uninstall removes
       # it. spctl's answer depends on the runner's Gatekeeper setting, so this
