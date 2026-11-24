@@ -11,8 +11,8 @@
 # The url is the versioned download link the Sparkle appcast uses. The sha256 is
 # for the DMG that link serves.
 cask "harbor-notes" do
-  version "1.0.100"
-  sha256 "2e430edb1e49d7821fb8f1c4bda42326a586b1ed61112cc11462b82fa9fe04c1"
+  version "1.1.2"
+  sha256 "70f5b56ae3a373622f842e90d9b37f510d39e8c5c7fc1438420f193e18f0e4b3"
 
   url "https://app.harbor.my/download/mac/#{version}"
   name "Harbor"
